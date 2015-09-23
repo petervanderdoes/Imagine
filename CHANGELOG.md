@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 0.6.3-avh1 (2015-09-23)
+  * Add option to keep aspect ratio when resizing.
+  
 ### 0.6.3 (2015-09-19)
   * Fix wrong array_merge when calling Transformation::getFilters without filters
   * Add export-ignore git attribute (@Benoth)
