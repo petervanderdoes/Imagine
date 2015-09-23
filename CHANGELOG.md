@@ -1,7 +1,8 @@
 # CHANGELOG
 
-### 0.6.3-avh1 (2015-09-23)
+### 0.6.3-avh2 (2015-09-23)
   * Add option to keep aspect ratio when resizing.
+  * Add scrutinizer file
   
 ### 0.6.3 (2015-09-19)
   * Fix wrong array_merge when calling Transformation::getFilters without filters
