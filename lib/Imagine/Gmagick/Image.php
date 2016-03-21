@@ -98,13 +98,9 @@ final class Image extends AbstractImage
         $maskSize = $mask->getSize();
 
         if ($size != $maskSize) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The given mask doesn\'t match current image\'s size, current mask\'s dimensions are %s, while image\'s dimensions are %s',
-                    $maskSize,
-                    $size
-                )
-            );
+            throw new InvalidArgumentException(sprintf('The given mask doesn\'t match current image\'s size, current mask\'s dimensions are %s, while image\'s dimensions are %s',
+                                                       $maskSize,
+                                                       $size));
         }
 
         try {
@@ -135,9 +131,7 @@ final class Image extends AbstractImage
     public function crop(PointInterface $start, BoxInterface $size)
     {
         if (!$start->in($this->getSize())) {
-            throw new OutOfBoundsException(
-                'Crop coordinates must start at minimum 0, 0 position from top left corner, crop height and width must be positive integers and must not exceed the current image borders'
-            );
+            throw new OutOfBoundsException('Crop coordinates must start at minimum 0, 0 position from top left corner, crop height and width must be positive integers and must not exceed the current image borders');
         }
 
         try {
@@ -253,17 +247,13 @@ final class Image extends AbstractImage
     public function getColorAt(PointInterface $point)
     {
         if (!$point->in($this->getSize())) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Error getting color at point [%s,%s]. The point must be inside the image of size [%s,%s]',
-                    $point->getX(),
-                    $point->getY(),
-                    $this->getSize()
-                         ->getWidth(),
-                    $this->getSize()
-                         ->getHeight()
-                )
-            );
+            throw new InvalidArgumentException(sprintf('Error getting color at point [%s,%s]. The point must be inside the image of size [%s,%s]',
+                                                       $point->getX(),
+                                                       $point->getY(),
+                                                       $this->getSize()
+                                                            ->getWidth(),
+                                                       $this->getSize()
+                                                            ->getHeight()));
         }
 
         try {
@@ -323,12 +313,10 @@ final class Image extends AbstractImage
 
         $image = $this;
 
-        return array_map(
-            function (\GmagickPixel $pixel) use ($image) {
-                return $image->pixelToColor($pixel);
-            },
-            $pixels
-        );
+        return array_map(function(\GmagickPixel $pixel) use ($image) {
+            return $image->pixelToColor($pixel);
+        },
+            $pixels);
     }
 
     /**
@@ -404,27 +392,21 @@ final class Image extends AbstractImage
     public function paste(ImageInterface $image, PointInterface $start)
     {
         if (!$image instanceof self) {
-            throw new InvalidArgumentException(
-                sprintf('Gmagick\Image can only paste() Gmagick\Image instances, %s given', get_class($image))
-            );
+            throw new InvalidArgumentException(sprintf('Gmagick\Image can only paste() Gmagick\Image instances, %s given',
+                                                       get_class($image)));
         }
 
         if (!$this->getSize()
                   ->contains($image->getSize(), $start)
         ) {
-            throw new OutOfBoundsException(
-                'Cannot paste image of the given size at the specified position, as it moves outside of the current image\'s box'
-            );
+            throw new OutOfBoundsException('Cannot paste image of the given size at the specified position, as it moves outside of the current image\'s box');
         }
 
         try {
-            $this->gmagick->compositeimage(
-                $image->gmagick,
-                \Gmagick::COMPOSITE_DEFAULT,
-                $start->getX(),
-                $start->getY()
-            )
-            ;
+            $this->gmagick->compositeimage($image->gmagick,
+                                           \Gmagick::COMPOSITE_DEFAULT,
+                                           $start->getX(),
+                                           $start->getY());
         } catch (\GmagickException $e) {
             throw new RuntimeException('Paste operation failed', $e->getCode(), $e);
         }
@@ -469,24 +451,19 @@ final class Image extends AbstractImage
 
         $palette = $this->palette();
 
-        return $this->palette->color(
-            array_map(
-                function ($color) use ($palette, $pixel, $colorMapping) {
-                    if (!isset($colorMapping[$color])) {
-                        throw new InvalidArgumentException(sprintf('Color %s is not mapped in Gmagick', $color));
-                    }
-                    $multiplier = 255;
-                    if ($palette->name() === PaletteInterface::PALETTE_CMYK) {
-                        $multiplier = 100;
-                    }
+        return $this->palette->color(array_map(function($color) use ($palette, $pixel, $colorMapping) {
+            if (!isset($colorMapping[$color])) {
+                throw new InvalidArgumentException(sprintf('Color %s is not mapped in Gmagick', $color));
+            }
+            $multiplier = 255;
+            if ($palette->name() === PaletteInterface::PALETTE_CMYK) {
+                $multiplier = 100;
+            }
 
-                    return $pixel->getcolorvalue($colorMapping[$color]) * $multiplier;
-                },
-                $this->palette->pixelDefinition()
-            ),
-            $alpha
-        )
-            ;
+            return $pixel->getcolorvalue($colorMapping[$color]) * $multiplier;
+        },
+            $this->palette->pixelDefinition()),
+                                     $alpha);
     }
 
     /**
@@ -497,9 +474,14 @@ final class Image extends AbstractImage
         try {
             $this->gmagick->profileimage('ICM', $profile->data());
         } catch (\GmagickException $e) {
-            throw new RuntimeException(
-                sprintf('Unable to add profile %s to image', $profile->name()), $e->getCode(), $e
-            );
+            if (false !== strpos($e->getMessage(), 'LCMS encoding not enabled')) {
+                throw new RuntimeException(sprintf('Unable to add profile %s to image, be sue to compile graphicsmagick with `--with-lcms2` option',
+                                                   $profile->name()), $e->getCode(), $e);
+            }
+
+            throw new RuntimeException(sprintf('Unable to add profile %s to image', $profile->name()),
+                                       $e->getCode(),
+                                       $e);
         }
 
         return $this;
@@ -536,13 +518,10 @@ final class Image extends AbstractImage
         }
 
         if ($this->keep_aspect_ratio) {
-            $size->setRatio(
-                $this->getSize()
-                     ->getWidth(),
-                $this->getSize()
-                     ->getHeight()
-            )
-            ;
+            $size->setRatio($this->getSize()
+                                 ->getWidth(),
+                            $this->getSize()
+                                 ->getHeight());
         }
 
         try {
@@ -640,9 +619,8 @@ final class Image extends AbstractImage
     public function usePalette(PaletteInterface $palette)
     {
         if (!isset(static::$colorspaceMapping[$palette->name()])) {
-            throw new InvalidArgumentException(
-                sprintf('The palette %s is not supported by Gmagick driver', $palette->name())
-            );
+            throw new InvalidArgumentException(sprintf('The palette %s is not supported by Gmagick driver',
+                                                       $palette->name()));
         }
 
         if ($this->palette->name() === $palette->name()) {
@@ -700,7 +678,9 @@ final class Image extends AbstractImage
             $image->setCompressionQuality($options['jpeg_quality']);
         }
 
-        if ((isset($options['png_compression_level']) || isset($options['png_compression_filter'])) && $format === 'png') {
+        if ((isset($options['png_compression_level']) || isset($options['png_compression_filter'])) &&
+            $format === 'png'
+        ) {
             // first digit: compression level (default: 7)
             if (isset($options['png_compression_level'])) {
                 if ($options['png_compression_level'] < 0 || $options['png_compression_level'] > 9) {
@@ -714,9 +694,7 @@ final class Image extends AbstractImage
             // second digit: compression filter (default: 5)
             if (isset($options['png_compression_filter'])) {
                 if ($options['png_compression_filter'] < 0 || $options['png_compression_filter'] > 9) {
-                    throw new InvalidArgumentException(
-                        'png_compression_filter option should be an integer from 0 to 9'
-                    );
+                    throw new InvalidArgumentException('png_compression_filter option should be an integer from 0 to 9');
                 }
                 $compression += $options['png_compression_filter'];
             } else {
@@ -799,13 +777,9 @@ final class Image extends AbstractImage
         ];
 
         if (!isset($mimeTypes[$format])) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Unsupported format given. Only %s are supported, %s given',
-                    implode(", ", array_keys($mimeTypes)),
-                    $format
-                )
-            );
+            throw new InvalidArgumentException(sprintf('Unsupported format given. Only %s are supported, %s given',
+                                                       implode(", ", array_keys($mimeTypes)),
+                                                       $format));
         }
 
         return $mimeTypes[$format];
@@ -850,9 +824,8 @@ final class Image extends AbstractImage
     private function setColorspace(PaletteInterface $palette)
     {
         if (!isset(static::$colorspaceMapping[$palette->name()])) {
-            throw new InvalidArgumentException(
-                sprintf('The palette %s is not supported by Gmagick driver', $palette->name())
-            );
+            throw new InvalidArgumentException(sprintf('The palette %s is not supported by Gmagick driver',
+                                                       $palette->name()));
         }
 
         $this->gmagick->setimagecolorspace(static::$colorspaceMapping[$palette->name()]);
