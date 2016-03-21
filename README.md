@@ -1,17 +1,14 @@
 #Imagine
-[![project status](http://stillmaintained.com/avalanche123/Imagine.png)](http://stillmaintained.com/avalanche123/Imagine)
-[![Build Status](https://travis-ci.org/avalanche123/Imagine.svg?branch=develop)](https://travis-ci.org/avalanche123/Imagine)
+[![Build Status](https://travis-ci.org/petervanderdoes/imagine.svg?branch=master)](https://travis-ci.org/petervanderdoes/imagine)
 
-Tweet about it using the [#php_imagine](https://twitter.com/search?q=%23php_imagine) hashtag.
-
-Image manipulation library for PHP 5.3 inspired by Python's PIL and other image
+Image manipulation library for PHP 5.6+ inspired by Python's PIL and other image
 libraries.
 
-##Requirements##
+## Requirements
 
 The Imagine library has the following requirements:
 
- - PHP 5.3+
+ - PHP 5.6+
 
 Depending on the chosen Image implementation, you may need one of the following:
 
@@ -20,9 +17,19 @@ Depending on the chosen Image implementation, you may need one of the following:
  - Gmagick
 
 ### Installation using composer
-`php composer.phar require imagine/imagine`
-
-##Basic Principles##
+Add the following to composer.json
+```json
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/petervanderdoes/imagine"
+    }
+  ],
+  "require": {
+    "imagine/imagine": "dev-master"
+  }
+```
+## Basic Principles
 
 The main purpose of Imagine is to provide all the necessary functionality to bring all native low level image processing libraries in PHP to the same simple and intuitive OO API.
 
@@ -40,11 +47,11 @@ Some of the ideas for upcoming filters:
 * Reflection - apple style
 * Rounded corners - web 2.0
 
-## Documentation ##
+## Documentation
 
  - [Hosted by Read The Docs](http://imagine.readthedocs.org/)
 
-## Presentations ##
+## Presentations
 
  - [Introduction to Imagine](http://www.slideshare.net/avalanche123/introduction-toimagine)
  - [How to Take Over the World with Lithium](http://speakerdeck.com/u/nateabele/p/how-to-take-over-the-world-with-lithium?slide=33)

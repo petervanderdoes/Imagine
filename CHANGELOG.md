@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### Next Release
+  * Remove support for PHP 5.3, 5.4, 5.5
+  
 ### 0.6.3-avh2 (2015-09-23)
   * Add option to keep aspect ratio when resizing.
   * Add scrutinizer file
