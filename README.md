@@ -1,5 +1,6 @@
 #Imagine
-[![Build Status](https://travis-ci.org/petervanderdoes/imagine.svg?branch=master)](https://travis-ci.org/petervanderdoes/imagine)
+[![Build Status](https://travis-ci.org/petervanderdoes/imagine.svg?branch=develop)](https://travis-ci.org/petervanderdoes/imagine)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/petervanderdoes/imagine/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/petervanderdoes/imagine/?branch=develop)
 
 Image manipulation library for PHP 5.6+ inspired by Python's PIL and other image
 libraries.
